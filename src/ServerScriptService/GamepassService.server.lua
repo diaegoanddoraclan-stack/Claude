@@ -30,8 +30,9 @@ local function applySpeed(player, character)
 	humanoid.WalkSpeed = 16 * mult
 end
 
-local function applyPass(player, pass)
-	player:SetAttribute("Owns_" .. pass.name, true)
+local function applyPass(player, key, pass)
+	-- Attribute names can't contain spaces, so use the config key (e.g. "Owns_DoubleMoney")
+	player:SetAttribute("Owns_" .. key, true)
 	for key, value in pass.attributes or {} do
 		-- Stackable bonuses add together (e.g. VIP + Pet Slots = +4)
 		if string.sub(key, 1, 5) == "Bonus" then
@@ -47,18 +48,28 @@ local function applyPass(player, pass)
 	end
 end
 
-Players.PlayerAdded:Connect(function(player)
+local function onPlayerAdded(player)
 	player.CharacterAdded:Connect(function(character) applySpeed(player, character) end)
-	for _, pass in Gamepasses do
-		if ownsPass(player, pass.id) then applyPass(player, pass) end
+	for key, pass in Gamepasses do
+		-- Check passes in parallel so one slow request doesn't delay the rest
+		task.spawn(function()
+			if ownsPass(player, pass.id) and not player:GetAttribute("Owns_" .. key) then
+				applyPass(player, key, pass)
+			end
+		end)
 	end
-end)
+end
+
+Players.PlayerAdded:Connect(onPlayerAdded)
+for _, player in Players:GetPlayers() do
+	task.spawn(onPlayerAdded, player) -- players who joined before this script ran
+end
 
 MarketplaceService.PromptGamePassPurchaseFinished:Connect(function(player, passId, purchased)
 	if not purchased then return end
-	for _, pass in Gamepasses do
-		if pass.id == passId and not player:GetAttribute("Owns_" .. pass.name) then
-			applyPass(player, pass)
+	for key, pass in Gamepasses do
+		if pass.id == passId and not player:GetAttribute("Owns_" .. key) then
+			applyPass(player, key, pass)
 		end
 	end
 end)

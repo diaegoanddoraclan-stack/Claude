@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kukirin Sale – 49.5% Off</title>
+<style>
+body{margin:0;font-family:system-ui,sans-serif;background:#0f1115;color:#eee}
+header{padding:48px 16px;text-align:center;background:linear-gradient(135deg,#e63946,#ff8c42)}
+h1{margin:0;font-size:2.4rem}header p{font-size:1.2rem}
+main{max-width:1000px;margin:auto;padding:24px 16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.card{background:#1b1f27;border-radius:12px;padding:16px;position:relative}
+.badge{position:absolute;top:12px;right:12px;background:#e63946;border-radius:6px;padding:2px 8px;font-size:.8rem}
+.card h3{margin:24px 0 4px}.old{text-decoration:line-through;color:#888}.new{font-size:1.5rem;color:#4ade80;font-weight:700}
+button{margin-top:10px;width:100%;padding:10px;border:0;border-radius:8px;background:#e63946;color:#fff;font-weight:700;cursor:pointer}
+footer{text-align:center;padding:24px;color:#888;font-size:.85rem}
+</style></head><body>
+<header><h1>Kukirin Mega Sale</h1><p>Every Kukirin scooter – 49.5% OFF</p></header>
+<main id="grid"></main>
+<footer>List prices are placeholders – edit the array in this file. Not affiliated with Kukirin.</footer>
+<script>
+const OFF=49.5;
+const models=[["G1",799],["G2 Pro",999],["G2 Max",1199],["G3",1299],["G3 Pro",1499],["G4",1699],["G5",1899],["C1 Pro",699],["M5",899],["S1 Pro",1099],["T3",1399],["V1",1599]];
+document.getElementById("grid").innerHTML=models.map(([n,p])=>`<div class="card"><span class="badge">-${OFF}%</span><h3>Kukirin ${n}</h3><div class="old">$${p.toFixed(2)}</div><div class="new">$${(p*(1-OFF/100)).toFixed(2)}</div><button>Buy now</button></div>`).join("");
+</script></body></html>
